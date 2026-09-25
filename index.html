@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ckb" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>دەبیت بە هاوڕێم؟</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@600;700&family=Noto+Sans+Arabic:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1f3350;
+    --sub:#5b7291;
+    --blue-800:#274b8a;
+    --blue-600:#3f7fe0;
+    --blue-500:#5b93ea;
+    --blue-300:#a9c8f5;
+    --blue-100:#e7f1fd;
+    --blue-50:#f4f9ff;
+    --card:#ffffff;
+    --line:#dbe7fa;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0; min-height:100vh; font-family:'Noto Sans Arabic', sans-serif; color:var(--ink);}
+  body{
+    display:flex; align-items:center; justify-content:center;
+    min-height:100vh; padding:28px 16px;
+    background:linear-gradient(160deg,var(--blue-50),var(--blue-100) 55%,#eef5ff 100%);
+    background-size:200% 200%;
+    animation:drift 16s ease-in-out infinite;
+    overflow-x:hidden; position:relative;
+  }
+  @keyframes drift{0%,100%{background-position:0% 30%;}50%{background-position:100% 70%;}}
+
+  .sparkles{position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:0;}
+  .sparkles span{
+    position:absolute; bottom:-8%; color:var(--blue-300); opacity:.6;
+    animation:rise linear infinite;
+  }
+  @keyframes rise{to{ transform:translateY(-115vh) translateX(var(--dx,0px)) rotate(25deg); opacity:0;}}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important;}
+  }
+
+  .card{
+    position:relative; z-index:1;
+    width:100%; max-width:380px;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:26px;
+    padding:30px 24px 26px;
+    text-align:center;
+    box-shadow:0 30px 60px -28px rgba(39,75,138,.35), 0 2px 10px rgba(39,75,138,.08);
+    animation:cardIn .6s cubic-bezier(.22,1,.36,1) both;
+  }
+  @keyframes cardIn{from{opacity:0; transform:translateY(16px) scale(.97);} to{opacity:1; transform:translateY(0) scale(1);}}
+  .card.shake{animation:shake .45s ease;}
+  @keyframes shake{
+    10%,90%{transform:translateX(-2px);} 20%,80%{transform:translateX(4px);}
+    30%,50%,70%{transform:translateX(-8px);} 40%,60%{transform:translateX(8px);}
+  }
+
+  .face-box{
+    width:168px; height:168px; margin:0 auto 18px;
+    border-radius:22px;
+    background:linear-gradient(160deg,#eef6ff,var(--blue-100));
+    border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    position:relative; overflow:hidden;
+  }
+  .face-box::after{
+    content:''; position:absolute; inset:0;
+    background:radial-gradient(circle at 50% 12%, rgba(255,255,255,.7), transparent 60%);
+  }
+  .face-box svg{ width:118px; height:118px; position:relative; z-index:1; animation:pop .45s cubic-bezier(.22,1.4,.36,1) both;}
+  @keyframes pop{from{opacity:0; transform:scale(.8) translateY(6px);} to{opacity:1; transform:scale(1) translateY(0);}}
+
+  .msg{
+    font-size:1.02rem; font-weight:700; line-height:1.9; color:var(--ink);
+    margin:0 0 22px; min-height:58px;
+    animation:fadeUp .45s .05s cubic-bezier(.22,1,.36,1) both;
+  }
+  @keyframes fadeUp{from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);}}
+
+  .final-title{
+    font-family:'Noto Naskh Arabic', serif;
+    font-size:1.7rem; color:var(--blue-600); margin:0 0 10px;
+    animation:fadeUp .5s cubic-bezier(.22,1,.36,1) both;
+  }
+
+  .row{
+    display:flex; gap:12px; justify-content:center; align-items:center;
+    position:relative; min-height:56px;
+  }
+
+  button{ font-family:inherit; cursor:pointer; border:none; }
+
+  .btn-no{
+    background:#fff; color:var(--sub);
+    border:1.5px solid var(--line);
+    border-radius:14px; padding:14px 22px;
+    font-size:.95rem; font-weight:700;
+    transition:transform .18s ease, box-shadow .18s ease, background .2s ease;
+    will-change:transform;
+  }
+  .btn-no:hover{ background:var(--blue-50); }
+
+  .btn-yes{
+    background:linear-gradient(135deg,var(--blue-500),var(--blue-800));
+    color:#fff; border-radius:14px; padding:14px 26px;
+    font-size:.95rem; font-weight:800;
+    box-shadow:0 14px 26px -14px rgba(39,75,138,.7);
+    transition:transform .18s ease, box-shadow .18s ease;
+  }
+  .btn-yes:hover{ transform:translateY(-2px); box-shadow:0 18px 30px -14px rgba(39,75,138,.8); }
+  .btn-yes:active, .btn-no:active{ transform:scale(.97); }
+
+  .btn-single{
+    width:100%;
+    background:linear-gradient(135deg,var(--blue-500),var(--blue-800));
+    color:#fff; border-radius:14px; padding:15px 20px;
+    font-size:.95rem; font-weight:800;
+    box-shadow:0 14px 26px -14px rgba(39,75,138,.7);
+    transition:transform .18s ease, box-shadow .18s ease;
+  }
+  .btn-single:hover{ transform:translateY(-2px); }
+
+  .btn-restart{
+    display:inline-flex; align-items:center; gap:8px;
+    background:linear-gradient(135deg,var(--blue-500),var(--blue-800));
+    color:#fff; border-radius:14px; padding:14px 24px;
+    font-size:.95rem; font-weight:800; margin-top:4px;
+    box-shadow:0 14px 26px -14px rgba(39,75,138,.7);
+    transition:transform .18s ease;
+  }
+  .btn-restart:hover{ transform:translateY(-2px) rotate(0deg); }
+  .btn-restart svg{ width:17px; height:17px; transition:transform .4s ease; }
+  .btn-restart:hover svg{ transform:rotate(-70deg); }
+
+  .confetti{position:absolute; inset:0; pointer-events:none; overflow:visible;}
+  .confetti span{
+    position:absolute; top:40%; left:50%; font-size:16px;
+    animation:burst .9s ease-out forwards;
+  }
+  @keyframes burst{
+    to{ transform:translate(var(--bx), var(--by)) rotate(var(--br)); opacity:0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="sparkles" id="sparkles" aria-hidden="true"></div>
+
+<div class="card" id="card">
+  <div class="face-box" id="faceBox"></div>
+  <div id="msgWrap">
+    <div class="msg" id="msg"></div>
+  </div>
+  <div class="row" id="row"></div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+
+/* ---------- original simple bear-face illustrations ---------- */
+function face(kind){
+  const base = `
+    <ellipse cx="30" cy="26" rx="16" ry="15" fill="#3f7fe0" opacity=".18"/>
+    <ellipse cx="90" cy="26" rx="16" ry="15" fill="#3f7fe0" opacity=".18"/>
+    <circle cx="60" cy="62" r="46" fill="#fff" stroke="#274b8a" stroke-width="3"/>
+  `;
+  const blush = `<ellipse cx="38" cy="70" rx="9" ry="6" fill="#ffc9c9" opacity=".8"/><ellipse cx="82" cy="70" rx="9" ry="6" fill="#ffc9c9" opacity=".8"/>`;
+
+  const parts = {
+    question: `<circle cx="60" cy="54" r="2.6" fill="#274b8a"/><circle cx="43" cy="60" r="3.4" fill="#274b8a"/><circle cx="77" cy="60" r="3.4" fill="#274b8a"/>
+      <path d="M50 78q10 8 20 0" stroke="#274b8a" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <text x="60" y="24" font-size="20" text-anchor="middle" fill="#3f7fe0" font-weight="700">؟</text>${blush}`,
+    shy: `<path d="M37 58q6-6 12 0" stroke="#274b8a" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M71 58q6-6 12 0" stroke="#274b8a" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M52 80q8 6 16 0" stroke="#274b8a" stroke-width="3" fill="none" stroke-linecap="round"/>${blush}`,
+    hope: `<circle cx="44" cy="60" r="3.6" fill="#274b8a"/><circle cx="76" cy="60" r="3.6" fill="#274b8a"/>
+      <path d="M48 76q12 10 24 0" stroke="#274b8a" stroke-width="3" fill="none" stroke-linecap="round"/>${blush}`,
+    plead: `<path d="M40 62q4-8 10-2" stroke="#274b8a" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M70 62q4-8 10-2" stroke="#274b8a" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M50 80q10 -4 20 0" stroke="#274b8a" stroke-width="3" fill="none" stroke-linecap="round"/>${blush}`,
+    suspicious: `<path d="M38 58h12" stroke="#274b8a" stroke-width="3" stroke-linecap="round"/>
+      <path d="M70 58h12" stroke="#274b8a" stroke-width="3" stroke-linecap="round"/>
+      <path d="M52 78h16" stroke="#274b8a" stroke-width="3" stroke-linecap="round"/>`,
+    sad: `<circle cx="44" cy="62" r="3.4" fill="#274b8a"/><circle cx="76" cy="62" r="3.4" fill="#274b8a"/>
+      <path d="M50 82q10 -8 20 0" stroke="#274b8a" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <ellipse cx="40" cy="72" rx="3" ry="6" fill="#8fc1ff" opacity=".8"/>`,
+    blush2: `<path d="M38 60q6-4 10 0" stroke="#274b8a" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M72 60q6-4 10 0" stroke="#274b8a" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M50 78q10 6 20 0" stroke="#274b8a" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <ellipse cx="36" cy="72" rx="8" ry="5" fill="#ffb3b3" opacity=".9"/><ellipse cx="84" cy="72" rx="8" ry="5" fill="#ffb3b3" opacity=".9"/>`,
+    joy: `<path d="M38 58q6-10 12 0" stroke="#274b8a" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M70 58q6-10 12 0" stroke="#274b8a" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M46 76q14 14 28 0" stroke="#274b8a" stroke-width="3.4" fill="none" stroke-linecap="round"/>${blush}
+      <text x="24" y="30" font-size="16">💙</text><text x="86" y="26" font-size="16">✨</text>`
+  };
+  return `<svg viewBox="0 0 120 120">${base}${parts[kind]||parts.question}</svg>`;
+}
+
+/* ---------- dialogue stages ---------- */
+const stages = [
+  { face:'question', msg:'ئایا دەتەوێت ببیت بە هاوڕێی نزیکم؟ 🥺', type:'both' },
+  { face:'shy',       msg:'خۆم دەمزانی دڵت ویستە! بەڵام باشە، سەرەتا کەمێک ناز بکە... 🙈', type:'single', single:'باشە، بەردەوام بە' },
+  { face:'hope',      msg:'ڕاستیت لێ بڵێم، زۆرم پێ خۆشە ببیتە هاوڕێم 💙', type:'both' },
+  { face:'plead',     msg:'تکایە ناز مەکە... کێ لە من چاکتر دەدۆزیتەوە؟ 😔', type:'both' },
+  { face:'suspicious',msg:'درۆ دەکەیت! چاوەکانت شتێکی تر دەڵێن 👀', type:'both' },
+  { face:'sad',       msg:'دڵنیایت؟ بەڕاستی ناتەوێت ببیتە هاوڕێم؟ 🥹', type:'both' },
+  { face:'blush2',    msg:'با شەرم نەکەیت، دان بەوەدا بنێ کە دەتەوێت! ✨', type:'both' }
+];
+const finalStage = {
+  face:'joy',
+  title:'بەڵێی! 🎉',
+  msg:'خۆشم دەزانی! تۆ هەمیشە یەکێک لە باشترین و بەنرخترین کەسەکانی ژیانمی، وەک ئەستێرەیەک دەدرەوشێیتەوە 💙✨',
+};
+
+let idx = 0;
+let noClicks = 0;
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const canHover = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
+
+function renderStage(){
+  const s = stages[idx];
+  $('faceBox').innerHTML = face(s.face);
+  $('msg').textContent = s.msg;
+
+  const row = $('row');
+  row.innerHTML = '';
+
+  if(s.type === 'single'){
+    const btn = document.createElement('button');
+    btn.className = 'btn-single';
+    btn.textContent = s.single;
+    btn.onclick = () => { idx = Math.min(idx+1, stages.length-1); playTransition(renderStage); };
+    row.appendChild(btn);
+  } else {
+    const scale = Math.min(1 + noClicks*0.05, 1.35);
+    const noBtn = document.createElement('button');
+    noBtn.className = 'btn-no';
+    noBtn.textContent = 'نەخێر';
+    noBtn.style.transform = `scale(${Math.max(1 - noClicks*0.04, 0.78)})`;
+    noBtn.onclick = onNo;
+    if(canHover) noBtn.addEventListener('mouseenter', dodge);
+
+    const yesBtn = document.createElement('button');
+    yesBtn.className = 'btn-yes';
+    yesBtn.textContent = 'بەڵێ';
+    yesBtn.style.transform = `scale(${scale})`;
+    yesBtn.onclick = showFinal;
+
+    row.appendChild(noBtn);
+    row.appendChild(yesBtn);
+  }
+}
+
+function dodge(e){
+  if(idx < 2) return;
+  const row = $('row');
+  const rect = row.getBoundingClientRect();
+  const btn = e.currentTarget;
+  const maxX = Math.max(rect.width/2 - 60, 20);
+  const dx = (Math.random()*2-1) * maxX * Math.min(0.3 + idx*0.15, 1);
+  const dy = (Math.random()*1-0.5) * 18;
+  btn.style.transition = 'transform .18s ease';
+  btn.style.transform += ` translate(${dx}px, ${dy}px)`;
+}
+
+function onNo(){
+  noClicks++;
+  if(idx >= stages.length - 1){
+    if(!reduceMotion){
+      const card = $('card');
+      card.classList.remove('shake'); void card.offsetWidth;
+      card.classList.add('shake');
+    }
+    return;
+  }
+  idx = Math.min(idx+1, stages.length-1);
+  playTransition(renderStage);
+}
+
+function playTransition(cb){
+  if(reduceMotion){ cb(); return; }
+  const targets = [$('faceBox'), $('msg')];
+  targets.forEach(t => { t.style.transition='opacity .16s ease, transform .16s ease'; t.style.opacity=0; t.style.transform='translateY(-6px)'; });
+  setTimeout(() => {
+    cb();
+    targets.forEach(t => { t.style.opacity=''; t.style.transform=''; });
+  }, 170);
+}
+
+function showFinal(){
+  $('faceBox').innerHTML = face(finalStage.face);
+  $('msgWrap').innerHTML = `<div class="final-title">${finalStage.title}</div><div class="msg">${finalStage.msg}</div>`;
+  const row = $('row');
+  row.innerHTML = '';
+  const btn = document.createElement('button');
+  btn.className = 'btn-restart';
+  btn.innerHTML = `دووبارە <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M4 4v6h6M20 20v-6h-6"/><path d="M5.5 9A7.5 7.5 0 1119 15"/></svg>`;
+  btn.onclick = restart;
+  row.appendChild(btn);
+
+  if(!reduceMotion) burstConfetti();
+}
+
+function restart(){
+  idx = 0; noClicks = 0;
+  $('msgWrap').innerHTML = '<div class="msg" id="msg"></div>';
+  renderStage();
+}
+
+function burstConfetti(){
+  const wrap = document.createElement('div');
+  wrap.className = 'confetti';
+  const emojis = ['💙','✨','🎉','⭐'];
+  for(let n=0; n<16; n++){
+    const s = document.createElement('span');
+    s.textContent = emojis[n % emojis.length];
+    const angle = Math.random()*Math.PI*2;
+    const dist = 60 + Math.random()*90;
+    s.style.setProperty('--bx', Math.cos(angle)*dist + 'px');
+    s.style.setProperty('--by', Math.sin(angle)*dist + 'px');
+    s.style.setProperty('--br', (Math.random()*360)+'deg');
+    s.style.animationDelay = (Math.random()*0.15)+'s';
+    wrap.appendChild(s);
+  }
+  $('card').appendChild(wrap);
+  setTimeout(() => wrap.remove(), 1200);
+}
+
+/* ambient sparkles */
+(function seed(){
+  const box = $('sparkles');
+  const count = reduceMotion ? 0 : 12;
+  const glyphs = ['💙','✦','✧'];
+  for(let n=0; n<count; n++){
+    const el = document.createElement('span');
+    el.textContent = glyphs[n % glyphs.length];
+    el.style.left = Math.random()*100 + '%';
+    el.style.setProperty('--dx', (Math.random()*50-25)+'px');
+    el.style.fontSize = (10 + Math.random()*10)+'px';
+    el.style.animationDuration = (10 + Math.random()*9)+'s';
+    el.style.animationDelay = (Math.random()*10)+'s';
+    box.appendChild(el);
+  }
+})();
+
+renderStage();
+</script>
+</body>
+</html>
